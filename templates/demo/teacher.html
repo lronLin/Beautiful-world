@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+{# 加载静态资源文件 #}
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>讲师信息</title>
+    <style>
+        {# 设置div的大容器 #}
+        .container{
+            width: 960px;
+            {# 页边距 #}
+            margin: 0 auto;
+        }
+        .basic{
+            width: 60%;
+            float: left;
+        }
+        .potrait{
+            width: 40%;
+            float: left;
+        }
+        hr{
+            clear: both;
+        }
+        .button{
+            {# 行级元素 #}
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            background-color: red;
+            color: white;
+            font: 16px/30px Arial;
+            {# 默认文本样式 #}
+            text-decoration: none;
+            {# 文字居中 #}
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    {# 添加for循环指令 用模板语言构造页面的显示逻辑 模板语言中有for循环, if分支等 #}
+    {% for x in teachers_list %}
+        <div class="container">
+            <div class="basic">
+                <h1>{{ x.name }}老师 - {{ x.subject.name }}</h1>
+                <p><strong>讲师简介</strong></p>
+                <p>{{ x.intro }}</p>
+                <p><strong>教学理念</strong></p>
+                <p>{{ x.motto }}</p>
+                {# 老师编号传入这个函数 - 阻止a标签的默认行为 - void(0) ajax请求的url - href="/good/{{ x.no }} #}
+                <a href="/good/{{ x.no }}" class="button">好评({{ x.gcount }})</a>
+                <a href="/bad/{{ x.no }}" class="button">差评({{ x.bcount }})</a>
+            </div>
+            <div class="potrait"><p>
+                {# 如果老师有图片就显示, 没有就替换成新图片 if分支指令 #}
+                {% if x.photo %}
+                    {# 加载静态资源 #}
+                <img src="{% static x.photo %}">
+                {% endif %}
+            </div>
+            <hr>
+        </div>
+    {% endfor %}
+    {# 加载静态资源 #}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script>
+        {# 页面加载完后要执行的回调函数$函数 #}
+        $(function () {
+            {# 后代选择器 - basic 下面的 button / click绑定事件 #}
+            $('.basic .button').on('click', function (evt) {
+                {# 阻止a标签的默认行为 #}
+                evt.preventDefault();
+                {# 拿到事件源取a标签 - 将原生的js对象变成jquery对象 #}
+                var $a = $(evt.target);
+                {# 取href的属性 - 拿到url #}
+                var url = $a.attr('href');
+                {# 发起ajax请求 #}
+                $.ajax({
+                    'url': url,
+                    'type': 'get',
+                    {# 给服务器发数据 #}
+                    'data': {},
+                    {# 数据类型 #}
+                    'dataType': 'json',
+                    'success': function (json) {
+                        if (json.code == 200) {
+                            $a.text(json.result);
+                        }else if (json.code == 403) {
+                            alert(json.result);
+                        }
+                    },
+                    'error': function () {
+
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

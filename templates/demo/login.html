@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <style>
+        #login {
+            width: 250px;
+            margin: 20px auto;
+        }
+        #login form div {
+           margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>用户登录</h1>
+    <hr>
+    <div id="login">
+        <p style="color: red; font-size: 12px;">{{ hint }}</p>
+        {# get请求进页面, post请求受理表单 #}
+        <form  action="/login/" method="post">
+            {# 防止跨站身份伪造 - 防止网络重放攻击 - 防止表单重复提交 #}
+            {% csrf_token %}
+            <div>用户名: </div>
+            <div>
+                <input style="display: inline-block" id="user" type="text" name="username" required>
+            </div>
+            <div>密码: </div>
+            <div>
+                <input id="password" type="password" name="password" required>
+            </div>
+            <div>
+                <input type="submit" value="登录">
+            </div>
+        </form>
+        <a href="/register">注册新用户</a>
+    </div>
+</body>
+</html>

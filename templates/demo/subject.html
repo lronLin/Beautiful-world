@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学科信息</title>
+</head>
+<body>
+    <h1>学科信息</h1>
+    <hr>
+    <ul>
+        {% for subject in subjects_list %}
+        <li>
+            {# url直接从对象里取学生编号 - url为subjects(可自定义名字 - url也需要见名知意) #}
+            <a href="/subjects/{{ subject.no }}">{{ subject.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
